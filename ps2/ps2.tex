@@ -1,0 +1,140 @@
+\documentclass{assignment-263}
+
+\anum{2}
+\course{CSC263}
+\duedate{Feb 11, 2019}
+\filename{ps2.pdf, ps2.tex, num\_orders.py, num\_trees.py}
+
+\begin{document}
+\think
+\begin{enumerate}
+	\item \textbf{[12]} Let $a_1, a_2, \dots, a_n$ be a sequence of real
+		numbers, for some $n \ge 1$.  A \texttt{SUM-BOX} is an ADT that
+		stores the sequence and supports the following operations ($S$ is a
+		given \texttt{SUM-BOX}):
+		\begin{itemize}
+
+			\item \texttt{PARTIAL-SUM}$(S, m)$: return $\sum_{i=1}^m a_i$,
+				the partial sum from $a_1$ to $a_m$ $(1\le m\le n)$.
+
+			\item \texttt{CHANGE}$(S, i, y)$: change the value of $a_i$ to a
+				real number $y$.
+
+		\end{itemize}
+		Design a data structure that implements \texttt{SUM-BOX}, using an
+		\textbf{augmented AVL tree}. The worst-case runtime of both
+		\texttt{PARTIAL-SUM} and \texttt{CHANGE} must be in
+		$\mathcal{O}(\log n)$. Describe your design by answering the
+		following questions.
+		\begin{enumerate}
+			\item What is the key of each node in the AVL tree? What other
+				attributes are stored in each node?
+
+			\item Write the pseudo-code of your \texttt{PARTIAL-SUM}
+				operation, and explain why your code works correctly and why
+				its worst-case running time is $\mathcal{O}(\log n)$. Let
+				$S.\textit{root}$ denote the root node of the AVL tree.
+
+			\item Describe in clear and concise English how your
+				\texttt{CHANGE} operation works, and explain why it runs in
+				$\mathcal{O}(\log n)$ time while maintaining the attributes
+				stored in the nodes of the AVL tree.
+		\end{enumerate}
+Solution:\vskip5pt
+(a) (1)The key(i) of each node is the index of the each $a_n$ in the given sequence of number (2) psum :each node has the partial sum from 1 to i, where i is the current index(3) value: the number that is at the index i of the given sequence\vskip5pt
+(b)\begin{lstlisting}
+    def PARTIAL_SUM(S,m):
+        if S.root is None:
+            return 0      #when S is a None, sum will be 0
+        if S.root.key == m:
+            return S.root.psum   # psum as we defined in (a)
+        elif m > S.root.key and S.right: 
+            return PARTIAL_SUM(S.right,m)
+        elif m < S.root.key and S.left:
+            return PARTIAL_SUM(S.left,m)  
+\end{lstlisting}
+explanation: for the worst case, we need to find the partial sum from 1 to the end of the given sequence. So index m = n, and m is the largest number now. Since it is a AVL tree, to find the $m_{th}$ number, we only need to look at the right subtree. Therefore the running time is $\mathcal{O}(\log n)$.\vskip5pt
+(c)
+\begin{lstlisting}
+    def CHANGE(S, i, y):
+        if S is None:
+            #if None, do nothing
+        if S.root.key == i:
+            S.root.value = y; # value as we defined in (a)
+        elif i > S.root.key and S.right: 
+            CHANGE(S.right,i,y)
+        elif i < S.root.key and S.left:
+            CHANGE(S.left,i,y)  
+\end{lstlisting}
+
+Once we run \texttt{CHANGE} function. Look at the input i, if i is less than S.root.key, we only need to look at the left subtree. Otherwise we only need to look at the right subtree. Therefore, the rumtime will be  $\mathcal{O}(\log n)$.
+
+\end{enumerate}
+
+\program
+
+\begin{enumerate}
+\item[2.] \textbf{[12]} 
+The function \verb|num_orders| takes a list \verb|lst| giving the insertion order of elements into an initially empty BST. For example, \verb|[2, 1, 3]| means to insert 2, then insert 1, then insert 3.
+The function returns the total number of insertion orders (including \verb|lst|) that produce the same BST that \verb|lst| produces. 
+
+Here is a sample call of \verb|num_orders|:
+\begin{verbatim}
+>>> num_orders([2, 1, 3])
+2
+\end{verbatim}
+The return value is 2 because there are 2 insertion orders, \verb|[2, 1, 3]| and \verb|[2, 3, 1]|, that produce the same BST as produced by \verb|[2, 1, 3]|.
+
+Note that \verb|lst| can contain duplicates. Let's agree that equal elements go into the left subtree (not the right subtree). For example, the root of the tree for the insertion sequence \verb|[4, 4]| has 4 as its left node and an empty right subtree.
+
+Implement \verb|num_orders|.
+
+Requirements:
+\begin{itemize}
+\item Your code must be written in Python 3, and the filename must be \verb|num_orders.py|.
+\item We will grade only the \verb|num_orders| function; please do not change its signature in the starter code. include as many helper functions as you wish.
+   \end{itemize}
+
+\textbf{Write-up}: in your \verb|ps2.pdf/ps2.tex| files, include an explanation of how your code works. Please include a formal proof of correctness.\vskip5pt
+Solution:\vskip5pt
+For the helper function, it simply works as the Permutation: The number of ways about choosing x from y. And for the numorders function, we are using recursive method to count. To prove this:\vskip5pt
+Path 1: the first return. If the length of input list is less than 1, there is only one way to build a BST: itself. holds\vskip5pt
+Path 2: the second return. Since we know that the first node will always be the parent node. Then for the sublist which starts from the second element we divide them into left lists and right lists. Then by applying recursive rule, we can get the the total number of ways to build same BST is the multiplication of left and right combination.
+
+
+\item[3.] \textbf{[12]} 
+The function \verb|num_trees| takes the total number of \verb|nodes| and the number of \verb|leaves|, and returns the number of {\bf AVL-balanced} tree shapes with that many nodes and leaves.
+
+Here is a sample call of \verb|num_trees|:
+\begin{verbatim}
+>>> num_trees(5, 3)
+2
+\end{verbatim}
+
+This means that there are exactly two AVL-balanced trees that have five nodes where three of those nodes are leaves. Here are those two trees:
+
+\includegraphics[scale=0.6]{avl1}
+\includegraphics[scale=0.6]{avl2}
+
+Implement \verb|num_trees|.
+
+{\bf Note}: we're not asking you to implement any optimizations. As such, this thing really slows down when the number of nodes increases. We hope that your code can solve cases with 8 nodes or fewer in under a minute. It should of course be correct for larger numbers of nodes too, but it's OK if the time taken in these cases is prohibitive. (We're happy to talk to you about several possible optimizations if you're interested!)
+
+Requirements:
+\begin{itemize}
+\item Your code must be written in Python 3, and the filename must be \verb|num_trees.py|.
+\item We will grade only the \verb|num_trees| function; please do not change its signature in the starter code. include as many helper functions as you wish.
+   \end{itemize}
+
+\textbf{Write-up}: in your \verb|ps2.pdf/ps2.tex| files, include an explanation of how your code works. 
+Please include a formal proof of correctness.
+\end{enumerate}
+Solution:\vskip5pt
+Since AVL-balanced tree, the difference of heights will not exceed 1. And during observation, the number of ways that we can generate trees are the multiplication of the bottom leaves and their parents. And every times we match one level of nodes, we should divide by two to get the number of parents in th tree.
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
