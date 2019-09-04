@@ -1,0 +1,155 @@
+% Package providing macros and environments for LaTeX course materials 
+% at the Department of Computer Science, University of Toronto.
+% Copyright 2013, David Liu
+% Version 1.1, Nov 27, 2013
+
+% Package Name
+\ProvidesPackage{ut-csc}
+
+% Dependencies
+\RequirePackage{amsmath}
+\RequirePackage{amsfonts}
+\RequirePackage{mathtools} % Piecewise functions
+\RequirePackage{amsthm}
+\RequirePackage{amssymb} % Required for "does not divide" symbol
+\RequirePackage{listings} % For python code
+\RequirePackage{color}
+
+% Semantic names for propositional connectives (and "logical True/False")
+\newcommand{\NOT}{\neg}
+\newcommand{\AND}{\wedge}
+\newcommand{\OR}{\vee}
+\newcommand{\IMP}{\Rightarrow}
+\newcommand{\IFF}{\Leftrightarrow}
+\newcommand{\Iff}{\Longleftrightarrow} % Symbol used in equivalence derivations
+\newcommand{\TRUE}{\text{TRUE}}
+\newcommand{\FALSE}{\text{FALSE}}
+
+% Semantic name for a "divides" symbol.
+\newcommand{\DIV}{\mid}
+\newcommand{\NDIV}{\nmid}
+
+% Number sets
+\newcommand{\N}{\mathbb N} % Naturals
+\newcommand{\Z}{\mathbb Z} % Integers
+\newcommand{\Q}{\mathbb Q} % Rationals
+\newcommand{\R}{\mathbb R} % Reals
+\ifdefined\C
+	\renewcommand{\C}{\mathbb C} % Complex numbers
+\else
+	\newcommand{\C}{\mathbb C}
+\fi
+
+% A script font
+\newcommand{\cA}{\mathcal A}
+\newcommand{\cB}{\mathcal B}
+\newcommand{\cC}{\mathcal C}
+\newcommand{\cD}{\mathcal D}
+\newcommand{\cE}{\mathcal E}
+\newcommand{\cF}{\mathcal F}
+\newcommand{\cH}{\mathcal H}
+\newcommand{\cI}{\mathcal I}
+\newcommand{\cJ}{\mathcal J}
+\newcommand{\cL}{\mathcal L}
+\newcommand{\cK}{\mathcal K}
+\newcommand{\cN}{\mathcal N}
+\newcommand{\cO}{\mathcal O}
+\newcommand{\cP}{\mathcal P}
+\newcommand{\cQ}{\mathcal Q}
+\newcommand{\cS}{\mathcal S}
+\newcommand{\cT}{\mathcal T}
+\newcommand{\cV}{\mathcal V}
+\newcommand{\cW}{\mathcal W}
+\newcommand{\cZ}{\mathcal Z}
+
+% Short forms for set notation
+\newcommand{\emp}{\emptyset}
+\newcommand{\bs}{\backslash}
+
+% Math functions
+\newcommand{\floor}[1]{\left \lfloor #1 \right \rfloor} % Floor function
+\newcommand{\ceil}[1]{\left \lceil #1 \right \rceil} % Ceiling function
+\newcommand{\abs}[1]{\left | #1 \right |} % Absolute value
+\DeclareMathOperator{\lcm}{lcm}
+
+% Generic 'Solution' environment.
+\newenvironment{solution}
+{\bigskip \noindent \textbf{Solution: \\}}
+{}
+
+
+% Colors used in Python environment
+\definecolor{pygreen}{rgb}{0.1, 0.6, 0.0}
+\definecolor{pybrown}{rgb}{0.3, 0.1, 0.1}
+
+% Python environment with syntax highlighting, based on listing environment
+\lstnewenvironment
+  {python}
+  {\lstset{
+    basicstyle=\ttfamily,
+    frame=tb,
+    tabsize=2,
+    numbers=left,
+    numbersep=5pt,
+    keywords=[1]{def,if,else,elif,while,for,break,return,continue},
+    keywordstyle=[1]\color{blue}\bfseries,
+    comment=[s][\color{pygreen}]{'''}{'''},
+    comment=[s][\color{pygreen}]{"""}{"""},
+    comment=[l][\color{pybrown}]\#,
+    emph=[2]{len,print,floor,ceil,append,extend},
+    emphstyle=[2]
+    }}
+  {}	
+
+
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+% The rest of the document is for CSC165 only. 
+% CSC236 students can safely ignore this.
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+
+% Complexity Classes
+\renewcommand{\P}{\textbf{P} }
+\newcommand{\NP}{\textbf{NP} }
+
+% Command for problem definitions
+\newcommand{\problem}[3]{
+  \begin{quote}
+  \underline{\textsc{#1}} \\
+  \smallskip
+  Input: #2 \\
+  Output: #3
+  \end{quote}
+}
+
+% A better environment for proof structures, featuring syntax highlighting 
+\definecolor{proofblue}{rgb}{0.3, 0.3, 0.9}
+\definecolor{proofred}{rgb}{0.9, 0.3, 0.3}
+
+\newcommand{\EQ}{=}
+\newcommand{\COMMA}{,}
+\lstnewenvironment
+  {formalproof}
+  [1]
+  [TITLE MISSING!!!]
+  {\lstset{
+    mathescape=true,
+    basicstyle=\rmfamily,
+    emph=[1]{Let,let},
+    emphstyle=[1]\color{proofblue}\bfseries,
+    emph=[2]{Assume, assume},
+    emphstyle=[2]\color{proofred}\bfseries,
+    emph=[3]{Case, case},
+    emphstyle=[3]\bfseries,
+    morecomment=[l][\color{pybrown}\ttfamily]\#,
+    tabsize=4,
+    nolol,
+    columns=flexible,
+    escapeinside={$}{$},
+    title=\large\underline{#1}
+  }}
+  {}
+
+% Added to put a black square at the end of the formal proof environment.
+\renewcommand{\qedsymbol}{$\blacksquare$}
+\usepackage{etoolbox}
+\AtEndEnvironment{formalproof}{\qed}
